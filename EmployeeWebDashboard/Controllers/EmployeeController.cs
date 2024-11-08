@@ -8,7 +8,7 @@ namespace EmployeeWebDashboard.Controllers
         // GET /Employee
         public IActionResult Index()
         {
-            return Content("Employee controller");
+            return View();
         }
 
         // GET /Employee/Welcome
