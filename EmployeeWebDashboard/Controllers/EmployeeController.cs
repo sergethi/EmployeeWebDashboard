@@ -12,9 +12,11 @@ namespace EmployeeWebDashboard.Controllers
         }
 
         // GET /Employee/Welcome
-        public string Welcome(string name, int ID = 1)
+        public IActionResult Welcome(string name, int numTimes = 1)
         {
-            return HtmlEncoder.Default.Encode($"Hello {name}! Welcome  to the Employee dashboard!!... ID: {ID}");
+            ViewData["message"] = "Hello" + name + "! Welcome  to the Employee dashboard";
+            ViewData["numTimes"] = numTimes;
+            return View();
         }
     }
 }
