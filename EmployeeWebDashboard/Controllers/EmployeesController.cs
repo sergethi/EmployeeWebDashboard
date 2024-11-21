@@ -19,12 +19,42 @@ namespace EmployeeWebDashboard.Controllers
             _context = context;
         }
 
+
         // GET: Employees
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string employeeTeam, string searchString)
         {
-              return _context.Employee != null ? 
-                          View(await _context.Employee.ToListAsync()) :
-                          Problem("Entity set 'EmployeeWebDashboardContext.Employee'  is null.");
+            if (_context.Employee == null)
+            {
+                return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
+            }
+
+            // Use LINQ to get list of genres.
+            IQueryable<string> teamQuery = from m in _context.Employee
+                                            orderby m.Team
+                                            select m.Team;
+
+            var employees = from m in _context.Employee
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                employees = employees.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            if (!string.IsNullOrEmpty(employeeTeam))
+            {
+                employees = employees.Where(x => x.Team == employeeTeam);
+            }
+
+            var employeeTeamVM = new EmployeeTeamViewModel
+            {
+                Teams = new SelectList(await teamQuery.Distinct().ToListAsync()),
+                Employees = await employees.ToListAsync()
+            };
+
+            return View(employeeTeamVM);
+
+            
         }
 
         // GET: Employees/Details/5
